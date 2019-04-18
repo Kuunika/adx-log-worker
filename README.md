@@ -1,9 +1,5 @@
 # adx-log-worker
-An ADX worker used to log progress in other workers.
-
-# Email Worker
-
-Email worker is a background process that runs against email queue. It sends emails based on the data read in the queue
+An ADX log worker is a worker that is used to log migration progress in other workers.
 
 ## Dependencies
 
