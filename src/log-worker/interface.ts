@@ -6,3 +6,8 @@ export interface Message {
 export interface WorkerOptions {
   durable: boolean;
 }
+
+export interface CreateWorkerOptions {
+  connectRetries: number;
+  connectRetryInterval: number;
+}
