@@ -1,6 +1,7 @@
 export interface Message {
   channelId: string;
   message: string;
+  service: string;
 }
 
 export interface WorkerOptions {
