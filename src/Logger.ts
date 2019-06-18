@@ -51,7 +51,8 @@ export class PusherLogger {
 
   public async info(message: string): Promise<void> {
     await this.logger.info(message);
-    await this.pusher.trigger(this.channelId, 'my-event', message);
+    //TODO: use dynamic channel name
+    await this.pusher.trigger('my-channel', 'my-event', message);
   }
 
   public async error(message: string): Promise<void> {
