@@ -2,15 +2,24 @@ import { Logger, createLogger, format, transports } from 'winston';
 import Pusher = require('pusher');
 import { DotenvParseOutput } from 'dotenv';
 import { Message } from './log-worker/interface';
+import * as redis from 'redis';
+import { RedisClient } from 'redis';
 
 // TODO: This will go into a ADX Logger
 export class PusherLogger {
   private pusher: Pusher;
   private logger: Logger;
   private channelId = 'dhis2-integration-channelId';
+  private redisClient: RedisClient;
 
   constructor(config: DotenvParseOutput, message: Message) {
     const { channelId, service } = message;
+    this.redisClient = redis.createClient(
+      {
+        host: process.env.LOG_REDIS_HOST,
+        port: Number(process.env.LOG_REDIS_PORT)
+      }
+    )
     this.channelId = channelId;
     this.logger = createLogger({
       level: 'info',
@@ -49,10 +58,16 @@ export class PusherLogger {
     });
   }
 
+  private async redisWrite(message: string) {
+    this.redisClient.rpush(this.channelId, message, (err, reply) => { });
+  }
+
   public async info(message: string): Promise<void> {
-    await this.logger.info(message);
-    //TODO: use dynamic channel name
-    await this.pusher.trigger('my-channel', 'my-event', message);
+    if (message) {
+      await this.logger.info(message);
+      await this.redisWrite(message);
+      await this.pusher.trigger(this.channelId, 'my-event', message);
+    }
   }
 
   public async error(message: string): Promise<void> {

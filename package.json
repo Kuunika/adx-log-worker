@@ -21,9 +21,11 @@
   },
   "homepage": "https://github.com/Kuunika/adx-log-worker#readme",
   "dependencies": {
+    "@types/redis": "^2.8.13",
     "dotenv": "^7.0.0",
     "prettier": "^1.17.0",
     "pusher": "^2.2.0",
+    "redis": "^2.8.0",
     "tortoise": "^1.0.1",
     "winston": "^3.2.1"
   },
