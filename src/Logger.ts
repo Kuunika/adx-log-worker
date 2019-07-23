@@ -65,7 +65,7 @@ export class PusherLogger {
 
   public async info(message: string): Promise<void> {
     if (message) {
-      const _message = JSON.stringfy({ ...JSON.parse(message), timestamp: Date.now() });
+      const _message = JSON.stringify({ ...JSON.parse(message), timestamp: Date.now() });
       await this.logger.info(_message);
       await this.redisWrite(_message);
       await this.pusher.trigger(this.channelId, 'my-event', _message);
