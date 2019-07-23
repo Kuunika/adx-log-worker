@@ -60,15 +60,15 @@ export class PusherLogger {
 
   private async redisWrite(message: string) {
     //adding a timestamp to the redis message
-    const jsonMessage = { ...JSON.parse(message), timestamp: Date.now() };
-    this.redisClient.rpush(this.channelId, JSON.stringify(jsonMessage), (err, reply) => { });
+    this.redisClient.rpush(this.channelId, message, (err, reply) => { });
   }
 
   public async info(message: string): Promise<void> {
     if (message) {
-      await this.logger.info(message);
-      await this.redisWrite(message);
-      await this.pusher.trigger(this.channelId, 'my-event', message);
+      const _message = JSON.stringfy({ ...JSON.parse(message), timestamp: Date.now() });
+      await this.logger.info(_message);
+      await this.redisWrite(_message);
+      await this.pusher.trigger(this.channelId, 'my-event', _message);
     }
   }
 
